@@ -14,7 +14,7 @@ logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(level
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["testtok"]
+TOKEN = json.load(open("token.json"))["tok"]
 devid = json.load(open("token.json"))["chatid"]
 reconocimientos = json.load(open("reconicimientos.json"))
 teoria = json.load(open("teoria.json"))
