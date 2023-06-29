@@ -788,7 +788,7 @@ async def handle_message(update, context):
 async def error_no_file(update, context):
     await update.callback_query.answer()
     c = context.user_data
-    logging.error("No habia materiales en " + str(c))
+    await logging.error("No habia materiales en " + str(c))
     if c[0] == "start":
         keyboard = base_key("Volver", c[0], two=True)
     else:
