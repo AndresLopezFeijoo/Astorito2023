@@ -1,7 +1,7 @@
 import telegram.ext
 import json
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ConversationHandler, Application
+from telegram.ext import ConversationHandler, Application, ContextTypes
 from Tools import slice_lst, get_lst, base_key, send_mail
 from stats import new_json_data, plot_total_data, plot_detail_data, plot_pie_data, refresh_data
 import random
@@ -25,7 +25,7 @@ tyc = json.load(open("typ.json"))
 
 def main():
     conv_handler = telegram.ext.ConversationHandler(
-        entry_points=[telegram.ext.CommandHandler("start",start),
+        entry_points=[telegram.ext.CommandHandler("start", start),
                       telegram.ext.CallbackQueryHandler(pattern="home", callback=start_over)],
         states={
             Start: [telegram.ext.CallbackQueryHandler(pattern="bib", callback=books),
@@ -72,7 +72,7 @@ def main():
                      telegram.ext.CallbackQueryHandler(pattern="v", callback=teo5),
                      telegram.ext.CallbackQueryHandler(pattern="w", callback=teosol)]
         },
-        fallbacks=[telegram.ext.CallbackQueryHandler(pattern="end", callback=end)],
+        fallbacks=[telegram.ext.CallbackQueryHandler(pattern="x", callback=end)],
         allow_reentry=True
     )
 
@@ -248,8 +248,8 @@ async def melo_hind_list(update, context):
         reply_markup = InlineKeyboardMarkup(keyboard)
         await \
             update.callback_query.edit_message_text(text="\U0001f916 <strong>Puedo ofrecerte estos ejercicios:</strong>",
-                                                      reply_markup=reply_markup,
-                                                      parse_mode=telegram.constants.ParseMode.HTML)
+                                                    reply_markup=reply_markup,
+                                                    parse_mode=telegram.constants.ParseMode.HTML)
     except:
         await error_no_file(update, context)
 
@@ -416,10 +416,15 @@ async def snd_seq(update, context):
         new_json_data("sm")
     else:
         new_json_data("sr")
-    await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
-                                  text="\U0001f916 <strong>Elegí estos sonidos para vos....\n"
-                                       "Cuando lo tengas pedime la solución </strong>",
-                                  parse_mode=telegram.constants.ParseMode.HTML)
+
+    if update.callback_query.data == "n":
+        await update.callback_query.edit_message_text(text="\U0001f916 <strong>Dejame pensar..... </strong>",
+                                                      parse_mode=telegram.constants.ParseMode.HTML)
+    else:
+        await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
+                                      text="\U0001f916 <strong>Dejame pensar..... </strong>",
+                                      parse_mode=telegram.constants.ParseMode.HTML)
+
     file = random.choice(get_lst("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4], True, False))
     c[5] = file.split(".")[0]
     with open("secuencias/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + c[4] + "/" + file + ".flac", "rb") as audio_file:
@@ -430,8 +435,11 @@ async def snd_seq(update, context):
     keyboard = base_key("Solución", "m", two=False)
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
-                                  text="\U0001f916 <strong>Waiting orders .......</strong>",
-                                  reply_markup=reply_markup, parse_mode=telegram.constants.ParseMode.HTML)
+                                  text="\U0001f916 <strong>Elegí estos sonidos para vos....\n"
+                                       "Cuando lo tengas pedime la solución. \n"
+                                       "Te espero.....</strong>",
+                                  reply_markup=reply_markup,
+                                  parse_mode=telegram.constants.ParseMode.HTML)
 
 
 async def seq_sol(update, context):
@@ -546,10 +554,9 @@ async def snd_recon(update, context):
     try:
         file = random.choice(reconocimientos[c[1]][c[2]])
         with open("rec/" + c[1] + "/" + file + ".mp3", "rb") as audio_file:
-            await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
-                                          text="\U0001f916 <strong>Elegí este ejemplo para vos....\n"
-                                               "Cuando lo tengas pedime la solución </strong>",
-                                          parse_mode=telegram.constants.ParseMode.HTML)
+            await update.callback_query.edit_message_text(text="\U0001f916 <strong>Elegí este ejemplo para vos....\n"
+                                                          "Cuando lo tengas pedime la solución </strong>",
+                                                          parse_mode=telegram.constants.ParseMode.HTML)
             await context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"],
                                                action="upload_audio")
             await context.bot.send_voice(chat_id=update.callback_query["message"]["chat"]["id"], voice=audio_file,
@@ -564,7 +571,7 @@ async def snd_recon(update, context):
 
 
 async def recon_sol(update, context):
-    await  update.callback_query.answer()
+    await update.callback_query.answer()
     c = context.user_data
     c[3] = update.callback_query["data"][1:].split(".")[0]
     await update.callback_query.edit_message_text(text="\U0001f916 <strong>La respuesta es:\n" +
@@ -617,15 +624,19 @@ async def teo3(update, context):
     k2 = []
     if c[1] == "Apuntes":
         with open(c[0] + "/" + c[1] + "/" +  c[2] + ".pdf", "rb") as pdf_file:
+            keyboard = base_key("Atras", c[0], two=False)
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await update.callback_query.edit_message_text(text="\U0001f916 <strong>Ya te lo mando</strong>",
+                                                          parse_mode=telegram.constants.ParseMode.HTML)
             await context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"],
                                                action="upload_document")
             await context.bot.send_document(chat_id=update.callback_query["message"]["chat"]["id"], document=pdf_file,
                                             caption=u'📖 🤓 ' + c[2])
-            keyboard = base_key("Atras", c[0], two=False)
-            reply_markup = InlineKeyboardMarkup(keyboard)
             await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
                                           text="\U0001f916 <strong>Ahí está!! Que mas....?</strong>",
                                           reply_markup=reply_markup, parse_mode=telegram.constants.ParseMode.HTML)
+
+
     else:
         for i in get_lst(c[0] + "/" + c[1] + "/" + c[2], True, False):
             k2.append(InlineKeyboardButton(i, callback_data="u" + str(i)))
@@ -664,7 +675,7 @@ async def teo5(update, context):
                 "Elegí tu propia aventura"
         else:
             msg = "Escribi el siguiente acorde, \n" \
-                  "invertilo, cifralo y si corresponde resolvelo\n"
+                  "invertilo, cifralo y si corresponde resolvelo.\n"
 
     else:
         msg = "Ahí va otro!!"
@@ -675,9 +686,8 @@ async def teo5(update, context):
     try:
         file = random.choice(teoria[c[3]][c[4]])
         with open("teo/" + c[1] + "/" + c[2] + "/" + c[3] + "/" + file + ".png", "rb") as exercise:
-            await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
-                                          text="\U0001f916 <strong>" + msg + "</strong>",
-                                          parse_mode=telegram.constants.ParseMode.HTML)
+            await update.callback_query.edit_message_text(text="\U0001f916 <strong>" + msg + "</strong>",
+                                                          parse_mode=telegram.constants.ParseMode.HTML)
             await context.bot.send_chat_action(chat_id=update.callback_query["message"]["chat"]["id"],
                                                action="upload_photo")
             await context.bot.send_photo(chat_id=update.callback_query["message"]["chat"]["id"], photo=exercise,
@@ -727,10 +737,13 @@ async def rep(update, context):
 
 
 async def start(update, context):
-    await update.message.reply_text('🤖')
+    try:
+        await update.message.reply_text('🤖')
+    except:
+        pass
     first_name = update.message.from_user.first_name
     context.user_data[0] = "start"
-    msg = u" <strong>Hola {}!! soy Astorito, el droide de Astor.</strong>\U0001FA97\n" \
+    msg = u" <strong>Hola {}!! soy Astorito, el droide de Asr.</strong>\U0001FA97\n" \
           "Puedo ofrecerte las siguientes opciones, mucha suerte!!\U0001F3B6".format(first_name)
     k = [InlineKeyboardButton(text="Programa", url="https://cmbsas-caba.infd.edu.ar/sitio/nivel-medio/")]
     k2 = []
@@ -741,13 +754,12 @@ async def start(update, context):
     reply_markup = InlineKeyboardMarkup(k2)
     await context.bot.sendMessage(chat_id=update.message.chat_id, text=msg, reply_markup=reply_markup,
                                   parse_mode=telegram.constants.ParseMode.HTML)
+
     return Start
 
 
 async def start_over(update, context):
     await update.callback_query.answer()
-    await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"], text="🤖",
-                                  parse_mode=telegram.constants.ParseMode.HTML)
     context.user_data[0] = "start"
     k = [InlineKeyboardButton(text="Programa", url="https://cmbsas-caba.infd.edu.ar/sitio/nivel-medio/")]
     k2 = []
@@ -756,10 +768,10 @@ async def start_over(update, context):
     for i in range(0, len(k), 2):
         k2.append(k[i:i + 2])
     reply_markup = InlineKeyboardMarkup(k2)
-    await context.bot.sendMessage(chat_id=update.callback_query["message"]["chat"]["id"],
-                                  text="<strong>Empecemos otra vez!!</strong>\n"
-                                       "Contame que queres hacer.",
-                                  reply_markup=reply_markup, parse_mode=telegram.constants.ParseMode.HTML)
+    await update.callback_query.edit_message_text(text="🤖 <strong>Empecemos otra vez!!\n"
+                                                       "Contame que querés hacer.</strong>",
+                                                  reply_markup=reply_markup,
+                                                  parse_mode=telegram.constants.ParseMode.HTML)
     return Start
 
 
@@ -774,10 +786,10 @@ async def handle_message(update, context):
     if context.user_data[0] == "rep":
         await context.bot.send_chat_action(chat_id=update.message.chat_id, action="typing")
         send_mail(update.message["text"])
-        await update.message.reply_text("\U0001f916 <strong>Listo!!\nTu reporte fue enviado.\nGracias!!\n"
-                                        f"Algo mas? 👉 /start"
-                                        f"</strong>", parse_mode=telegram.constants.ParseMode.HTML)
+        await update.message.reply_text("\U0001f916 <strong>Listo!! Tu reporte fue enviado.\nGracias!!</strong>",
+                                        parse_mode=telegram.constants.ParseMode.HTML)
         context.user_data[0] = "-"
+        return await start(update, context)
     else:
         await \
             update.message.reply_text(f"\U0001f916 <strong>Dijiste {update.message.text} y no te entiendo....."
@@ -802,11 +814,21 @@ async def error_no_file(update, context):
 
 async def error(update, context): # Para cuando usan botoneras viejas y se marea el dicc user_data
     logging.error(str(context.error))
-    await context.bot.sendMessage(chat_id=devid, text="Hubo un error " + str(context.error))
-    await context.bot.sendMessage(chat_id=update.effective_chat.id,
+    if (str(context.error)).split(":")[0] == "Message is not modified":
+        return None
+    if str(context.error).split(":")[0] == "[Errno 2] No such file or directory":
+        await context.bot.sendMessage(chat_id=devid, text="Se equivocaron de boton " + str(context.error).split(":")[1])
+        await context.bot.sendMessage(chat_id=update.effective_chat.id,
+                                      text="<strong>🤖 No uses botones de botoneras viejas. \n"
+                                            "Siempre reinicia el Bot. \n"
+                                            "Seguí por acá 👉 /start y volvé a pedir lo que buscabas</strong>",
+                                      parse_mode=telegram.constants.ParseMode.HTML)
+
+    else:
+        await context.bot.sendMessage(chat_id=devid, text="Hubo un error " + str(context.error))
+        await context.bot.sendMessage(chat_id=update.effective_chat.id,
                                       text="<strong>🤖 Que papelón!!,\nalgo salió mal..... \n"
                                       f"Seguí por acá 👉 /start </strong>", parse_mode=telegram.constants.ParseMode.HTML)
-    return telegram.ext.ConversationHandler.END
 
 
 async def stats(update, context):

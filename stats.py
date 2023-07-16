@@ -7,7 +7,7 @@ import numpy as np
 from collections import Counter
 
 
-categories = ["dm", "dr", "lm", "lr", "sm", "sr", "bib", "sol", "hind", "melo", "rec"]
+categories = ["dm", "dr", "lm", "lr", "sm", "sr", "bib", "sol", "hind", "melo", "rec", "teo"]
 dates = []
 total = []
 dm = []
@@ -21,6 +21,7 @@ sol = []
 hind = []
 melo = []
 rec = []
+teo = []
 
 def refresh_data():
     uso = json.load(open("usage.json"))
@@ -37,10 +38,11 @@ def refresh_data():
                 eval(j).append(0)
             else:
                 eval(j).append(counter[j])
-    for i, j, k, l, m, n, o, p, q, r, s in zip(dm, dr, lm, lr, sm, sr, bib, sol, hind, melo, rec):
-        total.append(i + j + k + l + m + n + o + p + q + r + s)
+    for i, j, k, l, m, n, o, p, q, r, s, t in zip(dm, dr, lm, lr, sm, sr, bib, sol, hind, melo, rec, teo):
+        total.append(i + j + k + l + m + n + o + p + q + r + s + t)
 
-    cat_sum = [sum(dm), sum(dr), sum(lm), sum(lr), sum(sm), sum(sr), sum(bib), sum(sol), sum(hind), sum(melo), sum(rec)]
+    cat_sum = [sum(dm), sum(dr), sum(lm), sum(lr), sum(sm), sum(sr), sum(bib), sum(sol), sum(hind), sum(melo), sum(rec),
+               sum(teo)]
     return cat_sum
 
 def new_json_data(entry):
@@ -81,6 +83,7 @@ def plot_detail_data(dict): # El json de uso del bot
     plt.bar(x_ind + 4.5 * width, hind[-7:], width=width, label="Hindemith")
     plt.bar(x_ind - 4.5 * width, melo[-7:], width=width, label="Melo Cast.")
     plt.bar(x_ind - 5.5 * width, rec[-7:], width=width, label="Recon")
+    plt.bar(x_ind + 5.5 * width, teo[-7:], width=width, label="Teo")
 
     plt.title("Detalle últimos 7 dias") #Titulo
     plt.legend()  #Muestra las referencias de "label"
@@ -94,7 +97,7 @@ def plot_detail_data(dict): # El json de uso del bot
 
 def plot_pie_data(dict): # El json de uso del bot
     cat = ["D.Melo", "D.Rit", "Lec.Melo", "Lec.Rit", "Sec.Melo", "Sec.Rit", "Bilbio.",
-                  "Solfeo", "Hindemith", "M.Castillo", "Reconoc"]
+                  "Solfeo", "Hindemith", "M.Castillo", "Reconoc", "Teoria"]
     plt.bar(cat, refresh_data())
     plt.title("Uso total por categoria") #Titulo
     plt.grid(ls = ":")
@@ -102,3 +105,5 @@ def plot_pie_data(dict): # El json de uso del bot
     #plt.show()
     plt.savefig("grafico_uso2.png")
     plt.close()
+
+

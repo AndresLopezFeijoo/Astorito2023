@@ -43,12 +43,12 @@ def get_lst(path, clear: bool, nr: bool):  # Clear quita las extensiones, nr dev
 
 def base_key(*args, two: bool):
     if two:
-        keyboard = [[InlineKeyboardButton("Terminar", callback_data="end"),
+        keyboard = [[InlineKeyboardButton("Terminar", callback_data="x"),
                      InlineKeyboardButton("Home", callback_data="home")]]
     else:
         keyboard = [[InlineKeyboardButton(args[0], callback_data=args[1])],
                     [InlineKeyboardButton("Home", callback_data="home"),
-                     InlineKeyboardButton("Terminar", callback_data="end")]]
+                     InlineKeyboardButton("Terminar", callback_data="x")]]
     return keyboard
 
 def print_folder(path):
