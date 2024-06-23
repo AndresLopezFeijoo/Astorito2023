@@ -30,7 +30,7 @@ def slice_lst(lst, lst2, step):
     return lst2
 
 
-def get_lst(path, clear: bool, nr: bool):  # Clear quita las extensiones, nr devuelce ints
+def get_lst(path, clear: bool, nr: bool):  # Clear quita las extensiones, nr devuelve ints
     if clear:
         lst = [i.split(".")[0] for i in os.listdir(path) if not i.startswith('.')]
         if nr:

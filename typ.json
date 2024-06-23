@@ -13,9 +13,10 @@
      "10": "Re Mayor y en 2/4",
      "11": "Sol Mayor y en 3/4",
      "12": "Mi Mayor y en 3/4"
+     
  },
    "II": {
-      "1": "La menor y en 3/4",
+     "1": "La menor y en 3/4",
      "2": "Re menor y en 6/8",
      "3": "Sol menor y en 2/4",
      "4": "Sol menor y en 6/8",
@@ -25,6 +26,12 @@
      "8": "Sol menor y en 4/4",
      "9": "Do menor y en 3/8",
      "10": "Do Mayor y en 6/8"
+   },
+   "II Vde": {
+     "1":"Sol Mayor y en 3/4",
+     "2":"Fa Mayor y en 2/4",
+     "3":"Re Mayor y en 3/4",
+     "4":"Sib Mayor y en 2/4"
    },
    "III": {
      "1": "Mi menor y en 4/4",
@@ -52,11 +59,15 @@
    "IV": {
      "1": "La menor y en 6/8"
    },
-   "Audioperceptiva": {
+   "I 2024": {
      "1": "Do Mayor 4/4",
      "2": "Do Mayor 4/4",
      "3": "Do Mayor 4/4",
      "4": "Do Mayor 4/4",
+     "5": "Do Mayor y en 4/4",
+     "6": "Do Mayor y en 3/4",
+     "7": "Do Mayor y en 2/4",
+     "8": "Do Mayor y en 2/4",
      "11": "Do Mayor 4/4",
      "12": "Do Mayor 3/4",
      "13": "Do Mayor 2/4",

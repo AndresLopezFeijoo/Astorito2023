@@ -14,7 +14,7 @@ logging.basicConfig(filename="log.txt", format='%(asctime)s - %(name)s - %(level
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN = json.load(open("token.json"))["tok"]
+TOKEN = json.load(open("token.json"))["testtok"]
 devid = json.load(open("token.json"))["chatid"]
 reconocimientos = json.load(open("reconicimientos.json"))
 teoria = json.load(open("teoria.json"))
@@ -109,7 +109,7 @@ async def años(update, context):
     k2 = []
     for i in datos["years"]:
         k2.append(InlineKeyboardButton(i, callback_data="b" + i))
-    keyboard = slice_lst(k2, keyboard, 4)
+    keyboard = slice_lst(k2, keyboard, 5)
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.callback_query.edit_message_text(text="\U0001f916 <strong>De que año?</strong>", reply_markup=reply_markup,
                                             parse_mode=telegram.constants.ParseMode.HTML)
